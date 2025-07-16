@@ -7,6 +7,6 @@ terraform {
   }
 
   backend "azurerm" {
-    key                  = "micro-site.tfstate"
+    key = "micro-site.tfstate"
   }
 }
