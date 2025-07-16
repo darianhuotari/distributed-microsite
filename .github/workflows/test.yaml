@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
 
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+
 jobs:
   tf:
     runs-on: ubuntu-latest
@@ -14,6 +19,7 @@ jobs:
       checks: write        # Required to add status summary.
       contents: read       # Required to checkout repository.
       pull-requests: write # Required to add PR comment.
+      id-token: write
 
     steps:
       - name: Checkout repository
