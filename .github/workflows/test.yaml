@@ -32,6 +32,7 @@ jobs:
           working-directory: infra
           command: init
           arg-lock: false
+          arg-backend-config: "backends/prod.tfbackend"
           format: true
           validate: true
 
