@@ -3,9 +3,9 @@ name: 'Terraform Unit Tests'
 on:
   push:
 
-defaults:
-  run:
-    working-directory: "./infra"
+#defaults:
+#  run:
+#   working-directory: "./infra"
 
 permissions:
   security-events: write # Needed to upload-sarif

@@ -14,9 +14,9 @@ permissions:
   contents: read
   pull-requests: write
 
-defaults:
-  run:
-    working-directory: "./infra"
+#defaults:
+#  run:
+#    working-directory: "./infra"
 
 #These environment variables are used by the terraform azure provider to setup OIDC authentication. 
 env:
