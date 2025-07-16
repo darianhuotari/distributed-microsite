@@ -5,7 +5,7 @@ on:
 
 defaults:
   run:
-    working-directory: "/infra"
+    working-directory: "infra"
 
 permissions:
   security-events: write # Needed to upload-sarif
