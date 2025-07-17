@@ -129,7 +129,8 @@ jobs:
         continue-on-error: true # Allow this step to continue even if terraform output fails
 
       - name: Build And Deploy Static Web App
-        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+        # Only run if the original condition is met AND STATIC_WEB_APP_API_KEY is not empty.
+        if: (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')) && env.STATIC_WEB_APP_API_KEY != ''
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -144,11 +145,13 @@ jobs:
           output_location: "" # Built app content directory - optional
           # Only skip deployment if the token is missing/invalid AND it's a pull request.
           # This handles the edge case of the very first PR before the SWA is provisioned.
+          # This will now only be relevant if the step *does* run, and the key somehow becomes invalid.
           skip_deploy_on_missing_secrets: ${{ github.event_name == 'pull_request' }}
 
 
       - name: Close Pull Request
-        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        # Only run if the original condition is met AND STATIC_WEB_APP_API_KEY is not empty.
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && env.STATIC_WEB_APP_API_KEY != ''
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -156,4 +159,5 @@ jobs:
           azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           action: "close"
           # Always skip cleanup if the token is missing/invalid (e.g., SWA not provisioned yet)
+          # This will now only be relevant if the step *does* run, and the key somehow becomes invalid.
           skip_deploy_on_missing_secrets: true
