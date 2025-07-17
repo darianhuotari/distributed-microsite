@@ -1,18 +1,1 @@
-{
-  "routes": [
-    {
-      "route": "/*",
-      "methods": [
-        "get",
-        "head",
-        "post",
-        "put",
-        "delete",
-        "connect",
-        "trace",
-        "patch"
-      ],
-      "redirect": "/"
-    }
-  ]
-}
+{}
