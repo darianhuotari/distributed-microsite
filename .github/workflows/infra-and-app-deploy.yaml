@@ -126,7 +126,8 @@ jobs:
           app_location: "static" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
-          skip_deploy_on_missing_secrets: "true"
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: "true"
 
 
       - name: Close Pull Request
@@ -136,3 +137,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           action: "close"
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: "true"
