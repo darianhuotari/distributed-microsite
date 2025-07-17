@@ -24,8 +24,9 @@ Whitespace redeploy requires either a terraform destroy which is not currently a
 If we wanted to make this portable, we would want a pre-processor to build the requirements + return them to the client.
 
 To add:
-Custom domain support
+
 Dev environment / dynamic backends
+Custom domain support
 Log Analytics
 Azure Monitor / Application Insights
 Downtime alert
