@@ -18,6 +18,7 @@ resource "azurerm_key_vault" "main" {
   purge_protection_enabled   = false
   sku_name                   = "standard"
 
+  # Give the current user access to the key vault in order to write secret(s)
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
