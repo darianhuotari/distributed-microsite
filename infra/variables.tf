@@ -6,7 +6,7 @@ variable "site-name" {
 
 variable "location" {
   type        = string
-  default     = "East US"
+  default     = "East US 2"
   description = ""
 }
 
