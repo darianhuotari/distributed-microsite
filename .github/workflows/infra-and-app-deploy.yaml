@@ -107,34 +107,40 @@ jobs:
       - name: Get Static Web App API Key
         id: get_api_key
         run: |
-          API_KEY="" # Initialize to empty
+          API_KEY_VALUE="" # Initialize to empty
           # Initialize Terraform backend before attempting to get output
           terraform init -backend-config="backends/prod.tfbackend" -no-color 2>/dev/null || true
 
           # Attempt to get the Terraform output.
-          # Capture both stdout and stderr to check for warnings/errors.
-          OUTPUT_RESULT=$(terraform output -raw static_web_app_api_key 2>&1)
+          # Capture stdout and stderr separately to isolate the actual output.
+          # Use a temporary file for stderr to avoid mixing with stdout.
+          TERRAFORM_RAW_OUTPUT=$(terraform output -raw static_web_app_api_key 2> /tmp/tf_stderr.log)
           EXIT_CODE=$?
+          TERRAFORM_STDERR=$(cat /tmp/tf_stderr.log)
+          rm -f /tmp/tf_stderr.log # Clean up temp file
 
-          # Trim whitespace from the captured output
-          # TRIMMED_OUTPUT=$(echo "$OUTPUT_RESULT" | tr -d '\n' | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          # echo $TRIMMED_OUTPUT
-          
-          # Check if the command was successful (exit code 0)
-          # AND if the trimmed output does NOT contain common Terraform warning/error messages
-          # AND if the trimmed output is genuinely non-empty.
-          if [ "$EXIT_CODE" -eq 0 ] && [[ ! "$OUTPUT_RESULT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && [ -n "$OUTPUT_RESULT" ]; then
-            API_KEY="$OUTPUT_RESULT"
+          # Trim all whitespace from the raw output (stdout)
+          TRIMMED_OUTPUT=$(echo "$TERRAFORM_RAW_OUTPUT" | xargs)
+
+          # Check if the command was successful AND the trimmed output is non-empty
+          # AND the trimmed output does NOT contain common warning/error messages
+          # AND the stderr does NOT contain common error messages
+          if [ "$EXIT_CODE" -eq 0 ] && \
+             [ -n "$TRIMMED_OUTPUT" ] && \
+             [[ ! "$TRIMMED_OUTPUT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && \
+             [[ ! "$TERRAFORM_STDERR" =~ ^(Error:|Failed to reload) ]]; then # Check stderr for critical errors
+            API_KEY_VALUE="$TRIMMED_OUTPUT"
             echo "Terraform output 'static_web_app_api_key' retrieved successfully."
           else
-            echo "Terraform output 'static_web_app_api_key' not found, was empty, or contained warnings/errors. Setting API_KEY to empty string."
-            # Optionally, for debugging, you can uncomment the line below to see the full output:
-            echo "Full output was: $OUTPUT_RESULT"
+            echo "Terraform output 'static_web_app_api_key' not found, was empty, or contained warnings/errors. Setting API_KEY_VALUE to empty string."
+            echo "Debug Info: Exit Code: $EXIT_CODE"
+            echo "Debug Info: Trimmed Output: '$TRIMMED_OUTPUT'"
+            echo "Debug Info: Stderr: '$TERRAFORM_STDERR'"
           fi
 
-          # echo "::add-mask::$API_KEY"
-          echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
-          echo "masked key: $API_KEY"
+          # echo "::add-mask::$API_KEY_VALUE"
+          echo "STATIC_WEB_APP_API_KEY=$API_KEY_VALUE" >> $GITHUB_ENV # Store as env var for subsequent steps
+          echo "masked key: $API_KEY_VALUE"
         working-directory: "infra" # Adjust to your Terraform infra path
         continue-on-error: true
 
