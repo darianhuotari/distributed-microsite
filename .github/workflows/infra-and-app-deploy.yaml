@@ -117,18 +117,19 @@ jobs:
           EXIT_CODE=$?
 
           # Trim whitespace from the captured output
-          TRIMMED_OUTPUT=$(echo "$OUTPUT_RESULT" | tr -d '\n' | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          # TRIMMED_OUTPUT=$(echo "$OUTPUT_RESULT" | tr -d '\n' | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          # echo $TRIMMED_OUTPUT
           
           # Check if the command was successful (exit code 0)
           # AND if the trimmed output does NOT contain common Terraform warning/error messages
           # AND if the trimmed output is genuinely non-empty.
-          if [ "$EXIT_CODE" -eq 0 ] && [[ ! "$TRIMMED_OUTPUT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && [ -n "$TRIMMED_OUTPUT" ]; then
-            API_KEY_VALUE="$TRIMMED_OUTPUT"
+          if [ "$EXIT_CODE" -eq 0 ] && [[ ! "$OUTPUT_RESULT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && [ -n "$OUTPUT_RESULT" ]; then
+            API_KEY_VALUE="$OUTPUT_RESULT"
             echo "Terraform output 'static_web_app_api_key' retrieved successfully."
           else
             echo "Terraform output 'static_web_app_api_key' not found, was empty, or contained warnings/errors. Setting API_KEY_VALUE to empty string."
             # Optionally, for debugging, you can uncomment the line below to see the full output:
-            # echo "Full output was: $OUTPUT_RESULT"
+            echo "Full output was: $OUTPUT_RESULT"
           fi
 
           # echo "::add-mask::$API_KEY"
