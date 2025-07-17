@@ -2,7 +2,7 @@ name: Trigger on pull_request (plan) and push (apply) events with fmt/validate c
 
 on:
   pull_request:
-    
+
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
@@ -11,7 +11,7 @@ env:
 jobs:
   tf:
     runs-on: ubuntu-latest
-
+    environment: production
     permissions:
       actions: read        # Required to identify workflow run.
       checks: write        # Required to add status summary.
