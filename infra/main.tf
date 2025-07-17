@@ -9,7 +9,7 @@ resource "azurerm_static_web_app" "main" {
   location            = azurerm_resource_group.main.location
 }
 
-resource azurerm_key_vault "main" {
+resource "azurerm_key_vault" "main" {
   name = "${var.site-name}-kv"
   location = azurerm_resource_group.location
   tenant_id                   = data.azurerm_client_config.current.tenant_id
@@ -18,7 +18,7 @@ resource azurerm_key_vault "main" {
   sku_name                    = "standard"
 }
 
-resource azurerm_key_vault_secret "main" {
+resource "azurerm_key_vault_secret" "main" {
   name         = "${var.site-name}-api-key"
   value        = azurerm_static_web_app.api_key
   key_vault_id = azurerm_key_vault.main.id
