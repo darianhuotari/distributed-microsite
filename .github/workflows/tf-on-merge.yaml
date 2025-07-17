@@ -36,18 +36,6 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Init TF
-        id: tf
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: op5dev/tf-via-pr@v13
-        with:
-          working-directory: infra
-          command: init
-          arg-lock: false
-          arg-backend-config: "backends/prod.tfbackend"
-          format: true
-          validate: true
-
       - name: Provision TF
         uses: op5dev/tf-via-pr@v13
         with:
