@@ -11,7 +11,7 @@ resource "azurerm_static_web_app" "main" {
 
 resource "azurerm_key_vault" "main" {
   name                       = "${var.site-name}-kv"
-  location                   = azurerm_resource_group.location
+  location                   = azurerm_resource_group.main.location
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days = 7
   purge_protection_enabled   = false
@@ -20,7 +20,7 @@ resource "azurerm_key_vault" "main" {
 
 resource "azurerm_key_vault_secret" "main" {
   name         = "${var.site-name}-api-key"
-  value        = azurerm_static_web_app.api_key
+  value        = azurerm_static_web_app.main.api_key
   key_vault_id = azurerm_key_vault.main.id
 }
 
