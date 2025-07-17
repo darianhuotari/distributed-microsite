@@ -2,9 +2,13 @@
 name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint.
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -116,24 +120,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "static" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
-          ###### End of Repository/Build Configurations ######
 
-      - name: Deploy Static Web App
-        uses: azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
-          action: "upload"
-          app_location: "static" # Your app's source code path
-          api_location: ""  # Your API's source code path
-          output_location: "" # Your app's build output path
-        env:
-          # Ensure the environment variable is available to this step if needed
-          STATIC_WEB_APP_API_TOKEN: ${{ env.STATIC_WEB_APP_API_KEY }}
 
       - name: Close Pull Request
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
