@@ -1,4 +1,4 @@
-name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint. 
+name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint.
 
 on:
   pull_request:
