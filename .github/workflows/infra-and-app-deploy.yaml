@@ -107,19 +107,28 @@ jobs:
       - name: Get Static Web App API Key
         id: get_api_key
         run: |
-          API_KEY=''
+          API_KEY_VALUE="" # Initialize to empty
+          # Initialize Terraform backend before attempting to get output
+          terraform init -backend-config="backends/prod.tfbackend" -no-color 2>/dev/null || true
+
           # Attempt to get the Terraform output.
-          # If 'terraform output' fails (e.g., output not found), it will exit with non-zero.
-          # The '|| true' at the end prevents the script from failing if the output command fails.
-          # We capture stdout and remove newlines.
-          TEMP_OUTPUT=$(terraform output -raw static_web_app_api_key 2>/dev/null | tr -d '\n' | tr -d '\r')
+          # Capture both stdout and stderr to check for warnings/errors.
+          OUTPUT_RESULT=$(terraform output -raw static_web_app_api_key 2>&1)
+          EXIT_CODE=$?
+
+          # Trim whitespace from the captured output
+          TRIMMED_OUTPUT=$(echo "$OUTPUT_RESULT" | tr -d '\n' | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           
-          # Check if the command was successful AND if the output is non-empty
-          if [ $? -eq 0 ] && [ -n "$TEMP_OUTPUT" ]; then
-            API_KEY="$TEMP_OUTPUT"
+          # Check if the command was successful (exit code 0)
+          # AND if the trimmed output does NOT contain common Terraform warning/error messages
+          # AND if the trimmed output is genuinely non-empty.
+          if [ "$EXIT_CODE" -eq 0 ] && [[ ! "$TRIMMED_OUTPUT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && [ -n "$TRIMMED_OUTPUT" ]; then
+            API_KEY_VALUE="$TRIMMED_OUTPUT"
             echo "Terraform output 'static_web_app_api_key' retrieved successfully."
           else
-            echo "Terraform output 'static_web_app_api_key' not found or was empty. Setting API_KEY to empty string."
+            echo "Terraform output 'static_web_app_api_key' not found, was empty, or contained warnings/errors. Setting API_KEY_VALUE to empty string."
+            # Optionally, for debugging, you can uncomment the line below to see the full output:
+            # echo "Full output was: $OUTPUT_RESULT"
           fi
 
           # echo "::add-mask::$API_KEY"
