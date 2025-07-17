@@ -133,9 +133,8 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          # Use the API key from Terraform output for 'push' events (production deployment).
-          # For 'pull_request' events, use the auto-generated AZURE_STATIC_WEB_APPS_API_TOKEN secret.
-          azure_static_web_apps_api_token: ${{ github.event_name == 'push' && env.STATIC_WEB_APP_API_KEY || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          # Use the API key from Terraform output for BOTH push and pull_request events.
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
 
@@ -153,8 +152,8 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          # For 'pull_request' (closed) events, use the auto-generated AZURE_STATIC_WEB_APPS_API_TOKEN secret for cleanup.
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          # Use the API key from Terraform output for cleanup on PR close.
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           action: "close"
           # Always skip cleanup if the token is missing/invalid (e.g., SWA not provisioned yet)
           skip_deploy_on_missing_secrets: true
