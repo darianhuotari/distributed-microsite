@@ -1,5 +1,5 @@
 ---
-name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint.
+name: Plan and preview site on PR, Apply and promote to prod on merge to main
 
 on:
   push:
