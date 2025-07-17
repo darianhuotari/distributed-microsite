@@ -32,3 +32,4 @@ Downtime alert
 Billing alert
 Dashboard
 Smoke test
+encrypt state in gha
