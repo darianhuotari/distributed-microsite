@@ -1,5 +1,4 @@
----
-name: Plan and preview site on PR, Apply and promote to prod on merge to main 
+name: Plan and preview site on PR, Apply and promote to prod on merge to main
 
 on:
   push:
@@ -106,10 +105,14 @@ jobs:
 
       - name: Get Static Web App API Key
         id: get_api_key
+        # This step will now always run.
+        # It attempts to get the Terraform output, and if it fails (e.g., output doesn't exist yet),
+        # it sets API_KEY to an empty string.
         run: |
           API_KEY=""
           # Initialize Terraform backend before attempting to get output
           terraform init -backend-config="backends/prod.tfbackend" -no-color 2>/dev/null || true
+
           # Attempt to get the Terraform output. Redirect stderr to /dev/null to suppress errors.
           # Check the exit code ($?) to see if the command was successful.
           TEMP_API_KEY=$(terraform output -raw static_web_app_api_key 2>/dev/null)
@@ -123,14 +126,16 @@ jobs:
           echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
           echo "masked key: $API_KEY"
         working-directory: "infra" # Adjust to your Terraform infra path
-        continue-on-error: true
+        continue-on-error: true # Allow this step to continue even if terraform output fails
 
       - name: Build And Deploy Static Web App
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          # Use the API key from Terraform output for 'push' events (production deployment).
+          # For 'pull_request' events, use the auto-generated AZURE_STATIC_WEB_APPS_API_TOKEN secret.
+          azure_static_web_apps_api_token: ${{ github.event_name == 'push' && env.STATIC_WEB_APP_API_KEY || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
 
@@ -138,10 +143,9 @@ jobs:
           app_location: "static" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
-        env:
           # Only skip deployment if the token is missing/invalid AND it's a pull request.
           # This handles the edge case of the very first PR before the SWA is provisioned.
-          SKIP_DEPLOY_ON_MISSING_SECRETS: ${{ github.event_name == 'pull_request' }}
+          skip_deploy_on_missing_secrets: ${{ github.event_name == 'pull_request' }}
 
 
       - name: Close Pull Request
@@ -149,7 +153,8 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          # For 'pull_request' (closed) events, use the auto-generated AZURE_STATIC_WEB_APPS_API_TOKEN secret for cleanup.
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "close"
-        env:
-          SKIP_DEPLOY_ON_MISSING_SECRETS: "true"
+          # Always skip cleanup if the token is missing/invalid (e.g., SWA not provisioned yet)
+          skip_deploy_on_missing_secrets: true
