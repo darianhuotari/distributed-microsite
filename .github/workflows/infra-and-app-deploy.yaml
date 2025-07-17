@@ -1,5 +1,5 @@
 ---
-name: Plan and preview site on PR, Apply and promote to prod on merge to main
+name: Plan and preview site on PR, Apply and promote to prod on merge to main 
 
 on:
   push:
