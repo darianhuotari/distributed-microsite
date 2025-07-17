@@ -1,5 +1,5 @@
 ---
-name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint.
+name: Plan and preview site on PR, Apply and promote to prod on merge to main
 
 on:
   push:
@@ -106,6 +106,7 @@ jobs:
 
       - name: Get Static Web App API Key
         id: get_api_key
+        if: github.event_name == 'push'
         run: |
           API_KEY=$(terraform output -raw static_web_app_api_key)
           echo "::add-mask::$API_KEY"
@@ -118,7 +119,7 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          azure_static_web_apps_api_token: ${{ github.event_name == 'push' && env.STATIC_WEB_APP_API_KEY || '' }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
 
