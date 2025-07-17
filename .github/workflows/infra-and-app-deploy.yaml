@@ -122,7 +122,7 @@ jobs:
             echo "Terraform output 'static_web_app_api_key' not found or was empty. Setting API_KEY to empty string."
           fi
 
-          echo "::add-mask::$API_KEY"
+          # echo "::add-mask::$API_KEY"
           echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
           echo "masked key: $API_KEY"
         working-directory: "infra" # Adjust to your Terraform infra path
