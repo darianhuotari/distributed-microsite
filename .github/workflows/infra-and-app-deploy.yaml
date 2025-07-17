@@ -1,15 +1,19 @@
+---
 name: Trigger on pull_request (plan) and push (apply) events with fmt/validate checks and TFLint.
 
 on:
   pull_request:
+  push:
+    branches: [main]
 
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
 
+
 jobs:
-  tf:
+  tf-and-app:
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -36,7 +40,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Init TF
-        id: tf
+        id: tf-and-app
         if: ${{ github.event_name == 'pull_request' }}
         uses: op5dev/tf-via-pr@v13
         with:
@@ -95,3 +99,46 @@ jobs:
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
           arg-backend-config: "backends/prod.tfbackend"
+
+      - name: Get Static Web App API Key
+        id: get_api_key
+        run: |
+          API_KEY=$(terraform output -raw static_web_app_api_key)
+          echo "API_KEY_MASKED - ::add-mask::$API_KEY" # Mask the value in logs
+          echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
+        working-directory: "infra" # Adjust to your Terraform infra path
+
+      - name: Build And Deploy Static Web App
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "static" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "" # Built app content directory - optional
+          ###### End of Repository/Build Configurations ######
+
+      - name: Deploy Static Web App
+        uses: azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          action: "upload"
+          app_location: "static" # Your app's source code path
+          api_location: ""  # Your API's source code path
+          output_location: "" # Your app's build output path
+        env:
+          # Ensure the environment variable is available to this step if needed
+          STATIC_WEB_APP_API_TOKEN: ${{ env.STATIC_WEB_APP_API_KEY }}
+
+      - name: Close Pull Request
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
+          action: "close"
