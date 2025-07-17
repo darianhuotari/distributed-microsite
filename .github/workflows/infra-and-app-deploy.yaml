@@ -137,7 +137,9 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
         env:
-          SKIP_DEPLOY_ON_MISSING_SECRETS: "true"
+          # Only skip deployment if the token is missing/invalid AND it's a pull request.
+          # This handles the edge case of the very first PR before the SWA is provisioned.
+          SKIP_DEPLOY_ON_MISSING_SECRETS: ${{ github.event_name == 'pull_request' }}
 
 
       - name: Close Pull Request
