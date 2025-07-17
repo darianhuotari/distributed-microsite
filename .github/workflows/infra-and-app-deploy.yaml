@@ -106,20 +106,29 @@ jobs:
 
       - name: Get Static Web App API Key
         id: get_api_key
-        if: github.event_name == 'push'
         run: |
-          API_KEY=$(terraform output -raw static_web_app_api_key)
+          API_KEY=""
+          # Attempt to get the Terraform output. Redirect stderr to /dev/null to suppress errors.
+          # Check the exit code ($?) to see if the command was successful.
+          TEMP_API_KEY=$(terraform output -raw static_web_app_api_key 2>/dev/null)
+          if [ $? -eq 0 ]; then
+            API_KEY="$TEMP_API_KEY"
+          else
+            echo "Terraform output 'static_web_app_api_key' not found or command failed. Setting API_KEY to empty string."
+          fi
+
           echo "::add-mask::$API_KEY"
           echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
           echo "masked key: $API_KEY"
         working-directory: "infra" # Adjust to your Terraform infra path
+        continue-on-error: true
 
       - name: Build And Deploy Static Web App
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ github.event_name == 'push' && env.STATIC_WEB_APP_API_KEY || '' }}
+          azure_static_web_apps_api_token: ${{ env.STATIC_WEB_APP_API_KEY }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
 
