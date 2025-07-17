@@ -115,10 +115,6 @@ jobs:
           # Capture both stdout and stderr to check for warnings/errors.
           OUTPUT_RESULT=$(terraform output -raw static_web_app_api_key 2>&1)
           EXIT_CODE=$?
-
-          # Trim whitespace from the captured output
-          # TRIMMED_OUTPUT=$(echo "$OUTPUT_RESULT" | tr -d '\n' | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          # echo $TRIMMED_OUTPUT
           
           # Check if the command was successful (exit code 0)
           # AND if the trimmed output does NOT contain common Terraform warning/error messages
