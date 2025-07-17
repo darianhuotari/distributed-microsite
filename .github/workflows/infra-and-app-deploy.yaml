@@ -108,13 +108,18 @@ jobs:
         id: get_api_key
         run: |
           API_KEY=''
-          # Attempt to get the Terraform output. Redirect stderr to /dev/null to suppress errors.
-          # Check the exit code ($?) to see if the command was successful.
-          TEMP_API_KEY=$(terraform output -raw static_web_app_api_key 2>/dev/null)
-          if [ $? -eq 0 ]; then
-            API_KEY="$TEMP_API_KEY"
+          # Attempt to get the Terraform output.
+          # If 'terraform output' fails (e.g., output not found), it will exit with non-zero.
+          # The '|| true' at the end prevents the script from failing if the output command fails.
+          # We capture stdout and remove newlines.
+          TEMP_OUTPUT=$(terraform output -raw static_web_app_api_key 2>/dev/null | tr -d '\n' | tr -d '\r')
+          
+          # Check if the command was successful AND if the output is non-empty
+          if [ $? -eq 0 ] && [ -n "$TEMP_OUTPUT" ]; then
+            API_KEY="$TEMP_OUTPUT"
+            echo "Terraform output 'static_web_app_api_key' retrieved successfully."
           else
-            echo "Terraform output 'static_web_app_api_key' not found or command failed. Setting API_KEY to empty string."
+            echo "Terraform output 'static_web_app_api_key' not found or was empty. Setting API_KEY to empty string."
           fi
 
           echo "::add-mask::$API_KEY"
