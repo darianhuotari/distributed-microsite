@@ -11,7 +11,7 @@ env:
 jobs:
   tf:
     runs-on: ubuntu-latest
-    environment: production # this should be parameterized for dev, will do later
+    environment: production
     permissions:
       actions: read        # Required to identify workflow run.
       checks: write        # Required to add status summary.
