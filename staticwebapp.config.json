@@ -12,7 +12,7 @@
         "trace",
         "patch"
       ],
-      "redirect": ""
+      "redirect": "/"
     }
   ]
 }
