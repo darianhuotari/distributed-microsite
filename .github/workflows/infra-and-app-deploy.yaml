@@ -108,8 +108,9 @@ jobs:
         id: get_api_key
         run: |
           API_KEY=$(terraform output -raw static_web_app_api_key)
-          echo "API_KEY_MASKED - ::add-mask::$API_KEY" # Mask the value in logs
+          echo "::add-mask::$API_KEY"
           echo "STATIC_WEB_APP_API_KEY=$API_KEY" >> $GITHUB_ENV # Store as env var for subsequent steps
+          echo "masked key: $API_KEY"
         working-directory: "infra" # Adjust to your Terraform infra path
 
       - name: Build And Deploy Static Web App
