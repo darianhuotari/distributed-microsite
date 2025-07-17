@@ -108,6 +108,8 @@ jobs:
         id: get_api_key
         run: |
           API_KEY=""
+          # Initialize Terraform backend before attempting to get output
+          terraform init -backend-config="backends/prod.tfbackend" -no-color 2>/dev/null || true
           # Attempt to get the Terraform output. Redirect stderr to /dev/null to suppress errors.
           # Check the exit code ($?) to see if the command was successful.
           TEMP_API_KEY=$(terraform output -raw static_web_app_api_key 2>/dev/null)
