@@ -7,6 +7,8 @@ terraform {
   }
 
   backend "azurerm" {
-    key                  = "micro-site.tfstate"
+    key = "micro-site.tfstate"
   }
+
+  required_version = ">= 1.12"
 }
