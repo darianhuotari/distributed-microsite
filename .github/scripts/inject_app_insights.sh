@@ -61,13 +61,15 @@ echo "Terraform Backend Config: $BACKEND_CONFIG_FILE"
 
 # --- Step 1: Initialize Terraform Backend ---
 echo "Initializing Terraform backend..."
-# Explicitly change directory for Terraform commands, then return
 (
   cd "$TERRAFORM_DIR" || { echo "Error: Could not change to Terraform directory: $TERRAFORM_DIR"; exit 1; }
-  terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color -input=false &>/dev/null || true
+  # TEMPORARY CHANGE FOR DEBUGGING: REMOVE `&>/dev/null || true`
+  terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color -input=false
+  # The exit code check below will still catch critical failures.
 )
 
 # Check if terraform init truly failed (beyond just warnings)
+# This will now catch any non-zero exit from terraform init
 if [ $? -ne 0 ]; then
     echo "Error: Terraform initialization failed. Please check your Terraform configuration and backend setup."
     exit 1
