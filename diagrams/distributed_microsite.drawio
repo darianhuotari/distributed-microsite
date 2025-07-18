@@ -1,0 +1,101 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0" version="28.0.6">
+  <diagram name="Page-1" id="CIwXhHFeyJ4kRUPsQmxD">
+    <mxGraphModel dx="1426" dy="759" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-25" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="760" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-1" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="220" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-3" value="Azure Resources" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="450" y="50" width="320" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-2" target="NnTzYvmGJQZxOWfXGxiT-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-2" target="NnTzYvmGJQZxOWfXGxiT-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-2" value="&lt;div&gt;Static Web App&lt;/div&gt;&lt;div&gt;(Global)&lt;/div&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/preview/Static_Apps.svg;" vertex="1" parent="1">
+          <mxGeometry x="480" y="180" width="100.74" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-4" value="Key Vault" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/security/Key_Vaults.svg;" vertex="1" parent="1">
+          <mxGeometry x="670" y="70" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-5" value="&lt;div&gt;Log Analytics&lt;/div&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/analytics/Log_Analytics_Workspaces.svg;" vertex="1" parent="1">
+          <mxGeometry x="530" y="58" width="64" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-6" value="Global CDN" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/networking/Front_Doors.svg;" vertex="1" parent="1">
+          <mxGeometry x="300" y="100" width="90.67" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-7" value="Client" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.044;entryY=0.513;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-7" target="NnTzYvmGJQZxOWfXGxiT-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="276" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.01;entryY=0.538;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-6" target="NnTzYvmGJQZxOWfXGxiT-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-14" value="" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="610" y="180" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-13" value="SWA (Staging, regional)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/preview/Static_Apps.svg;" vertex="1" parent="1">
+          <mxGeometry x="650" y="196.17000000000007" width="60" height="47.65" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-15" target="NnTzYvmGJQZxOWfXGxiT-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-15" value="&lt;div&gt;PR:&lt;/div&gt;&lt;div&gt;Plans TF&lt;/div&gt;&lt;div&gt;Stages SWA&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="250" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-16" value="&lt;div&gt;Merge:&lt;/div&gt;&lt;div&gt;Applies TF&lt;/div&gt;&lt;div&gt;Deploys SWA&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="306" y="240" width="88.66" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-15" target="NnTzYvmGJQZxOWfXGxiT-14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="350" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="235" y="400" />
+              <mxPoint x="680" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-21" value="&amp;nbsp;Monitors changes and provides link to ephemeral staging site&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NnTzYvmGJQZxOWfXGxiT-17">
+          <mxGeometry x="-0.0957" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-16" target="NnTzYvmGJQZxOWfXGxiT-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-26" target="NnTzYvmGJQZxOWfXGxiT-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-26" value="&lt;div&gt;GitHub +&lt;/div&gt;&lt;div&gt;GitHub Actions&lt;/div&gt;" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.webicons.github;gradientColor=#DFDEDE" vertex="1" parent="1">
+          <mxGeometry x="85" y="255" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-28" value="&lt;div&gt;App&amp;nbsp;&lt;/div&gt;&lt;div&gt;Insights&lt;/div&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/devops/Application_Insights.svg;" vertex="1" parent="1">
+          <mxGeometry x="460" y="59" width="44" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.068;entryY=0.349;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="NnTzYvmGJQZxOWfXGxiT-7" target="NnTzYvmGJQZxOWfXGxiT-28">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="81" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NnTzYvmGJQZxOWfXGxiT-31" value="&amp;nbsp;Telemetry&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NnTzYvmGJQZxOWfXGxiT-30">
+          <mxGeometry x="-0.0628" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
