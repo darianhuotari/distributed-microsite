@@ -26,3 +26,16 @@ resource "azurerm_application_insights_standard_web_test" "main" {
     url = "https://${azurerm_static_web_app.main.default_host_name}"
   }
 }
+
+resource "azurerm_monitor_metric_alert" "main" {
+  name                = "${var.site-name}-${var.environment_name}-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_application_insights_web_test.main.id, data.azurerm_application_insights.main.id]
+  description         = "Web test alert"
+
+  application_insights_web_test_location_availability_criteria {
+    web_test_id           = azurerm_application_insights_web_test.main.id
+    component_id          = azurerm_application_insights.main.id
+    failed_location_count = 2
+  }
+}
