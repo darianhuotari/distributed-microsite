@@ -117,6 +117,17 @@ jobs:
         run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh ${{ matrix.environment }}"
         working-directory: "infra" # Adjust to your Terraform infra path
 
+      - name: Retrieve App Insights Connection String and Inject into HTML
+        # Use absolute path to the script since we also use a working-directory
+        run: |
+          "$GITHUB_WORKSPACE/.github/scripts/inject_app_insights.sh" \
+            "$GITHUB_WORKSPACE/source/index.html" \
+            "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
+            "${{ matrix.environment }}" \
+            "." \
+            "app_insights_connection_string"
+        working-directory: "infra"
+
       - name: Build And Deploy Static Web App
         # We make sure the key isn't empty; if so, skip because the infra hasn't been provisioned yet
         if: (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')) && env.STATIC_WEB_APP_API_KEY != ''
