@@ -120,7 +120,7 @@ jobs:
       - name: Retrieve App Insights Connection String and Inject into HTML
         # Use absolute path to the script since we also use a working-directory
         run: |
-          "${{ github.workspace }}/.github/scripts/inject_app_insights.sh" \
+          .github/scripts/inject_app_insights.sh \
             "${{ github.workspace }}/source/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
             "${{ matrix.environment }}" \
