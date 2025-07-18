@@ -136,7 +136,7 @@ jobs:
           # This assumes your repo root is directly at $GITHUB_WORKSPACE
           # i.e., source/index.html is at $GITHUB_WORKSPACE/source/index.html
           "${GITHUB_WORKSPACE}/.github/scripts/inject_app_insights.sh" \
-            "${GITHUB_WORKSPACE}/source/index.html" \
+            "${GITHUB_WORKSPACE}/static/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
             "${{ matrix.environment }}" \
             "${GITHUB_WORKSPACE}/infra" \

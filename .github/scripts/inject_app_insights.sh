@@ -4,7 +4,7 @@
 # based on the environment and injects it into an HTML file.
 
 # --- Input Arguments ---
-# $1: Absolute path to the HTML file (e.g., "$GITHUB_WORKSPACE/source/index.html")
+# $1: Absolute path to the HTML file (e.g., "$GITHUB_WORKSPACE/static/index.html")
 # $2: The placeholder string in the HTML file (e.g., "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER")
 # $3: The deployment environment (e.g., "development", "production")
 # $4: Absolute path to the directory containing Terraform files (e.g., "$GITHUB_WORKSPACE/infra")
@@ -16,7 +16,7 @@ set -e
 # Check if required arguments are provided
 if [ "$#" -lt 4 ]; then
     echo "Usage: $0 <html_file_path_abs> <placeholder_string> <environment> <terraform_dir_abs> [tf_output_name]"
-    echo "  <html_file_path_abs>: Absolute path to the HTML file to modify (e.g., \$GITHUB_WORKSPACE/source/index.html)."
+    echo "  <html_file_path_abs>: Absolute path to the HTML file to modify (e.g., \$GITHUB_WORKSPACE/static/index.html)."
     echo "  <placeholder_string>: The string to replace in the HTML file (e.g., 'APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER')."
     echo "  <environment>: The deployment environment ('development' or 'production')."
     echo "  <terraform_dir_abs>: Absolute path to your Terraform configuration directory (e.g., \$GITHUB_WORKSPACE/infra)."
