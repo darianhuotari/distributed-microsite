@@ -125,7 +125,7 @@ jobs:
           "${GITHUB_WORKSPACE}/.github/scripts/inject_app_insights.sh" \
             "${GITHUB_WORKSPACE}/source/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
-            "${{ github.event.inputs.environment }}" \
+            "${{ matrix.environment }}" \
             "${GITHUB_WORKSPACE}/infra" \
             "app_insights_connection_string"
         continue-on-error: true
