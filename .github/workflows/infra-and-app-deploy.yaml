@@ -126,6 +126,7 @@ jobs:
             "${{ matrix.environment }}" \
             "${{ github.workspace }}/infra" \ # Absolute path to your Terraform root module
             "app_insights_connection_string"
+        continue-on-error: true
 
       - name: Build And Deploy Static Web App
         # We make sure the key isn't empty; if so, skip because the infra hasn't been provisioned yet
