@@ -18,8 +18,13 @@ env:
 
 jobs:
   tf-and-app:
+    strategy:
+      matrix:
+        environment: ['production'] # Define your environments here
+      fail-fast: false # Set to true to cancel all jobs if any matrix job fails
+
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ matrix.environment }}
     permissions:
       actions: read        # Required to identify workflow run.
       checks: write        # Required to add status summary.
@@ -51,7 +56,7 @@ jobs:
           working-directory: infra
           command: init
           arg-lock: false
-          arg-backend-config: "backends/prod.tfbackend"
+          arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
           format: true
           validate: true
 
@@ -102,7 +107,7 @@ jobs:
           working-directory: infra
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
-          arg-backend-config: "backends/prod.tfbackend"
+          arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
 
       - name: Get Static Web App API Key
         id: get_api_key
