@@ -12,7 +12,7 @@
 # $5: (Optional) The name of the Terraform output containing the connection string (default: "app_insights_connection_string")
 
 # Check if required arguments are provided
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 4 ]; then
     echo "Usage: $0 <html_file_path_abs> <placeholder_string> <environment> [terraform_dir_relative] [tf_output_name]"
     echo "  <html_file_path_abs>: Absolute path to the HTML file to modify (e.g., \$GITHUB_WORKSPACE/source/index.html)."
     echo "  <placeholder_string>: The string to replace in the HTML file (e.g., 'APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER')."
@@ -26,7 +26,7 @@ fi
 HTML_FILE="$1"
 PLACEHOLDER="$2"
 ENVIRONMENT="$3"
-TERRAFORM_DIR="${4:-.}" # <<< CHANGED: Default to '.' because GHA step sets working-directory
+TERRAFORM_DIR="$4"
 TF_OUTPUT_NAME="${5:-app_insights_connection_string}"
 
 # --- Validate Environment ---
@@ -39,8 +39,8 @@ fi
 # BACKEND_CONFIG_FILE needs to be relative to TERRAFORM_DIR
 BACKEND_CONFIG_FILE="${TERRAFORM_DIR}/backends/${ENVIRONMENT}.tfbackend"
 
-# Check if the Terraform directory exists (relative to the current working directory, which is 'infra')
-if [ ! -d "$TERRAFORM_DIR" ]; then # This check will now verify if '.' exists, which it always should.
+# Check if the Terraform directory exists (expects an absolute path for TERRAFORM_DIR)
+if [ ! -d "$TERRAFORM_DIR" ]; then
     echo "Error: Terraform directory not found: $TERRAFORM_DIR"
     exit 1
 fi
@@ -61,9 +61,11 @@ echo "Terraform Backend Config: $BACKEND_CONFIG_FILE"
 
 # --- Step 1: Initialize Terraform Backend ---
 echo "Initializing Terraform backend..."
-# terraform commands will run in the `working-directory` of the GHA step (i.e., 'infra')
-# so `terraform init` and `terraform output` implicitly operate on `infra`.
-terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color -input=false &>/dev/null || true
+# Explicitly change directory for Terraform commands, then return
+(
+  cd "$TERRAFORM_DIR" || { echo "Error: Could not change to Terraform directory: $TERRAFORM_DIR"; exit 1; }
+  terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color -input=false &>/dev/null || true
+)
 
 # Check if terraform init truly failed (beyond just warnings)
 if [ $? -ne 0 ]; then
@@ -74,8 +76,11 @@ echo "Terraform backend initialized successfully."
 
 # --- Step 2: Get Terraform Output ---
 echo "Attempting to retrieve Terraform output '${TF_OUTPUT_NAME}'..."
-TERRAFORM_RAW_OUTPUT=$(terraform output -raw "$TF_OUTPUT_NAME" 2> /tmp/tf_stderr_ai.log)
-EXIT_CODE=$?
+(
+  cd "$TERRAFORM_DIR" || { echo "Error: Could not change to Terraform directory: $TERRAFORM_DIR"; exit 1; }
+  TERRAFORM_RAW_OUTPUT=$(terraform output -raw "$TF_OUTPUT_NAME" 2> /tmp/tf_stderr_ai.log)
+)
+EXIT_CODE=$? # Capture exit code of the subshell
 TERRAFORM_STDERR=$(cat /tmp/tf_stderr_ai.log)
 rm -f /tmp/tf_stderr_ai.log
 

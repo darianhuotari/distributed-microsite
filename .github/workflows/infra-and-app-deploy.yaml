@@ -120,13 +120,12 @@ jobs:
       - name: Retrieve App Insights Connection String and Inject into HTML
         # Use absolute path to the script since we also use a working-directory
         run: |
-          "$GITHUB_WORKSPACE/.github/scripts/inject_app_insights.sh" \
-            "$GITHUB_WORKSPACE/source/index.html" \
+          "${{ github.workspace }}/.github/scripts/inject_app_insights.sh" \
+            "${{ github.workspace }}/source/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
             "${{ matrix.environment }}" \
-            "." \
+            "${{ github.workspace }}/infra" \ # Absolute path to your Terraform root module
             "app_insights_connection_string"
-        working-directory: "infra"
 
       - name: Build And Deploy Static Web App
         # We make sure the key isn't empty; if so, skip because the infra hasn't been provisioned yet
