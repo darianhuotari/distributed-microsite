@@ -117,14 +117,29 @@ jobs:
         run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh ${{ matrix.environment }}"
         working-directory: "infra" # Adjust to your Terraform infra path
 
-      - name: Retrieve App Insights Connection String and Inject into HTML
-        # Use absolute path to the script since we also use a working-directory
+          # --- CRITICAL DEBUGGING STEP ---
+      - name: Inspect Workspace Directory Structure
         run: |
-          .github/scripts/inject_app_insights.sh \
-            "${{ github.workspace }}/source/index.html" \
+          echo "Current working directory: $(pwd)"
+          echo "Value of GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Listing contents of GITHUB_WORKSPACE (depth 2):"
+          ls -R -L -d "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE"/* "$GITHUB_WORKSPACE"/*/* || true
+          # The `|| true` prevents this step from failing if some paths don't exist yet
+
+          echo "Attempting to locate index.html by searching GITHUB_WORKSPACE:"
+          find "$GITHUB_WORKSPACE" -name "index.html"
+          find "$GITHUB_WORKSPACE" -name "development.tfbackend"
+
+      - name: Retrieve App Insights Connection String and Inject into HTML
+        run: |
+          # Use GITHUB_WORKSPACE directly to build paths
+          # This assumes your repo root is directly at $GITHUB_WORKSPACE
+          # i.e., source/index.html is at $GITHUB_WORKSPACE/source/index.html
+          "${GITHUB_WORKSPACE}/.github/scripts/inject_app_insights.sh" \
+            "${GITHUB_WORKSPACE}/static/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
             "${{ matrix.environment }}" \
-            "${{ github.workspace }}/infra" \ # Absolute path to your Terraform root module
+            "${GITHUB_WORKSPACE}/infra" \
             "app_insights_connection_string"
         continue-on-error: true
 

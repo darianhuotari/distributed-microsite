@@ -23,6 +23,6 @@ resource "azurerm_application_insights_standard_web_test" "main" {
   enabled                 = true
 
   request {
-    url = azurerm_static_web_app.main.default_host_name
+    url = "https://${azurerm_static_web_app.main.default_host_name}"
   }
 }
