@@ -14,8 +14,8 @@ resource "azurerm_application_insights" "main" {
   application_type    = "other"
 }
 
-resource "azurerm_key_vault_secret" "main" {
-  name         = "${var.site-name}-${var.environment_name}-app-insights-connection-string"
+resource "azurerm_key_vault_secret" "appins" {
+  name         = "${var.site-name}-${var.environment_name}-appins-conn-str
   value        = azurerm_application_insights.main.connection_string
   key_vault_id = azurerm_key_vault.main.id
 }
