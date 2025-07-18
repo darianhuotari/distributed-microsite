@@ -1,6 +1,6 @@
 # distributed-microsite
 
-This is a simple distributed microsite, globally distributed / served via (Azure Static Web Apps.)[https://learn.microsoft.com/en-us/azure/static-web-apps/overview] 
+This is a simple distributed microsite, globally distributed / served via [Azure Static Web Apps.](https://learn.microsoft.com/en-us/azure/static-web-apps/overview) 
 
 Required for initial set-up:
 - Azure subscription ID
@@ -9,14 +9,14 @@ Required for initial set-up:
 - Storage account + container to store terraform state in
 - Executing user needs write permissions to above container
 
-(Set up OIDC to authenticate between GitHub and Azure)[https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure-openid-connect]
+[Set up OIDC to authenticate between GitHub and Azure](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure-openid-connect)
 Also see: https://github.com/Azure-Samples/terraform-github-actions?tab=readme-ov-file#getting-started
 
 
-Creating a PR triggers a main workflow using (TF-via-PR)[https://github.com/OP5dev/TF-via-PR]which:
+Creating a PR triggers a main workflow using [TF-via-PR](https://github.com/OP5dev/TF-via-PR) which:
 - runs `tflint` to check format + validate terraform files
 - comments pending terraform changes via `terraform plan`
-- automatically builds a staging site via the (Azure/static-web-apps-deploy@v1 GitHub action)[https://github.com/Azure/static-web-apps-deploy]. A (comment with a link)[https://learn.microsoft.com/en-us/azure/static-web-apps/review-publish-pull-requests] to the live staging site will be added to PRs.
+- automatically builds a staging site via the [Azure/static-web-apps-deploy@v1 GitHub action](https://github.com/Azure/static-web-apps-deploy). A [comment with a link](https://learn.microsoft.com/en-us/azure/static-web-apps/review-publish-pull-requests) to the live staging site will be added to PRs.
 
 Notes:
 
@@ -34,7 +34,7 @@ Talking points:
 
 Diagram
 
-Make prod deployments a dependency of dev
+Make prod deployments a dependency of dev (smoke test dev before deploying to prod?)
 
 Add js metrics to index.html
 
@@ -46,6 +46,6 @@ Billing alert
 
 Dashboard
 
-Smoke test
+
 
 encrypt state in gha
