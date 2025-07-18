@@ -74,6 +74,8 @@ Dependabot + external security scanning tools
 
 Modularization for portability + multi-repo set up (one for infra, one for code) if this is going to be re-used
 
+Conditional steps (i.e. only run terraform plan if infra dir has changes)
+
 Custom domain support (might help issue where it is hard to tell which stage site belongs to which env)
 
 Custom container for build / deploy, allowing for simpler local development without CI/CD dependencies
