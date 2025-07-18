@@ -112,7 +112,7 @@ jobs:
       - name: Get Static Web App API Key
         id: get_api_key
         # Use absolute path since we also use a working-directory
-        run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh production"
+        run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh ${{ matrix.environment }}"
         working-directory: "infra" # Adjust to your Terraform infra path
 
       - name: Build And Deploy Static Web App
