@@ -10,3 +10,7 @@ variable "location" {
   description = ""
 }
 
+variable "environment" {
+  description = "The name of the deployment environment (e.g., 'development', 'production')."
+  type        = string
+}
