@@ -103,6 +103,16 @@ jobs:
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
           arg-backend-config: "backends/prod.tfbackend"
+          
+      - name: Debug - List root
+        run: ls -F
+        working-directory: ${{ github.workspace }} # explicitly show repo root
+
+      - name: Debug - List .github directory
+        run: ls -F .github/
+
+      - name: Debug - List .github/scripts directory
+        run: ls -F .github/scripts/ # Check if the script is there and executable
 
       - name: Get Static Web App API Key
         id: get_api_key
