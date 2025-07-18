@@ -14,6 +14,12 @@ resource "azurerm_application_insights" "main" {
   application_type    = "other"
 }
 
+resource "azurerm_key_vault_secret" "main" {
+  name         = "${var.site-name}-${var.environment_name}-app-insights-connection-string"
+  value        = azurerm_application_insights.main.connection_string
+  key_vault_id = azurerm_key_vault.main.id
+}
+
 resource "azurerm_application_insights_standard_web_test" "main" {
   name                    = "${var.site-name}-${var.environment_name}-webtest"
   location                = azurerm_resource_group.main.location
