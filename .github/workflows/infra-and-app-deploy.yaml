@@ -116,7 +116,7 @@ jobs:
       - name: Get Static Web App API Key
         id: get_api_key
         # Use a relative path to your script
-        run: ./.github/scripts/get_swa_api_key.sh
+        run: .github/scripts/get_swa_api_key.sh
         working-directory: "infra" # Adjust to your Terraform infra path
         continue-on-error: true
 
