@@ -76,6 +76,6 @@ Custom container for build / deploy, allowing for simpler local development with
 
 Billing alert
 
-Dashboard
+Dashboards
 
 encrypt state in gha artifact

@@ -117,19 +117,6 @@ jobs:
         run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh ${{ matrix.environment }}"
         working-directory: "infra" # Adjust to your Terraform infra path
 
-          # --- CRITICAL DEBUGGING STEP ---
-      - name: Inspect Workspace Directory Structure
-        run: |
-          echo "Current working directory: $(pwd)"
-          echo "Value of GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "Listing contents of GITHUB_WORKSPACE (depth 2):"
-          ls -R -L -d "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE"/* "$GITHUB_WORKSPACE"/*/* || true
-          # The `|| true` prevents this step from failing if some paths don't exist yet
-
-          echo "Attempting to locate index.html by searching GITHUB_WORKSPACE:"
-          find "$GITHUB_WORKSPACE" -name "index.html"
-          find "$GITHUB_WORKSPACE" -name "development.tfbackend"
-
       - name: Retrieve App Insights Connection String and Inject into HTML
         run: |
           # Use GITHUB_WORKSPACE directly to build paths
