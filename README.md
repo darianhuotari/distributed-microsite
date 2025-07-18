@@ -72,7 +72,7 @@ Automated destroys
 
 Dependabot + external security scanning tools
 
-Modularization for portability, if this is going to be re-used
+Modularization for portability + multi-repo set up (one for infra, one for code) if this is going to be re-used
 
 Custom domain support (might help issue where it is hard to tell which stage site belongs to which env)
 
