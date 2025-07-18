@@ -20,7 +20,7 @@ jobs:
   tf-and-app:
     strategy:
       matrix:
-        environment: ['production'] # Define your environments here
+        environment: ["development", "production"] # Define your environments here
       fail-fast: false # Set to true to cancel all jobs if any matrix job fails
 
     runs-on: ubuntu-latest
