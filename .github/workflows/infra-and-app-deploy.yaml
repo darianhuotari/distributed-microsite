@@ -57,7 +57,7 @@ jobs:
           command: init
           arg-lock: false
           arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
-          arg-var-file: "env_vars/${{ matrix.environment }}.tfvars"
+          arg-var-file: "vars/${{ matrix.environment }}.tfvars"
           format: true
           validate: true
 
@@ -109,7 +109,7 @@ jobs:
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
           arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
-          arg-var-file: "env_vars/${{ matrix.environment }}.tfvars"
+          arg-var-file: "vars/${{ matrix.environment }}.tfvars"
 
       - name: Get Static Web App API Key
         id: get_api_key
