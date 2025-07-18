@@ -14,7 +14,7 @@
 set -e
 
 # Check if required arguments are provided
-if [ "$#" -lt 4 ]; then # Changed from 3 to 4, as $4 (TERRAFORM_DIR) is now required
+if [ "$#" -lt 4 ]; then
     echo "Usage: $0 <html_file_path_abs> <placeholder_string> <environment> <terraform_dir_abs> [tf_output_name]"
     echo "  <html_file_path_abs>: Absolute path to the HTML file to modify (e.g., \$GITHUB_WORKSPACE/source/index.html)."
     echo "  <placeholder_string>: The string to replace in the HTML file (e.g., 'APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER')."
@@ -28,8 +28,8 @@ fi
 HTML_FILE="$1"
 PLACEHOLDER="$2"
 ENVIRONMENT="$3"
-TERRAFORM_DIR="$4" # Now explicitly expecting an absolute path
-TF_OUTPUT_NAME="${5:-app_insights_connection_string}" # Default if not provided
+TERRAFORM_DIR="$4"
+TF_OUTPUT_NAME="${5:-app_insights_connection_string}"
 
 # --- Validate Environment ---
 if [[ "$ENVIRONMENT" != "development" && "$ENVIRONMENT" != "production" ]]; then
@@ -60,28 +60,25 @@ echo "Terraform Directory (passed as absolute path): $TERRAFORM_DIR"
 echo "Terraform Output Name: $TF_OUTPUT_NAME"
 echo "Terraform Backend Config: $BACKEND_CONFIG_FILE"
 
+# --- Change to the Terraform directory ONCE for all terraform commands ---
+cd "$TERRAFORM_DIR" || { echo "Error: Could not change to Terraform directory: $TERRAFORM_DIR"; exit 1; }
+
 # --- Step 1: Initialize Terraform Backend ---
 echo "Initializing Terraform backend..."
-# Change to the Terraform directory for init/output commands
-(
-  cd "$TERRAFORM_DIR" || { echo "Error: Could not change to Terraform directory: $TERRAFORM_DIR"; exit 1; }
+terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color &>/dev/null || true
+echo "Terraform backend initialized successfully."
 
-  # Initialize Terraform backend before attempting to get output
-  # Redirect stderr to /dev/null and allow failure as init might have already run
-  # This matches the working script's behavior
-  terraform init -backend-config="$BACKEND_CONFIG_FILE" -no-color &>/dev/null || true
+# --- Step 2: Get Terraform Output ---
+echo "Attempting to retrieve Terraform output '${TF_OUTPUT_NAME}'..."
 
-  # --- Step 2: Get Terraform Output ---
-  echo "Attempting to retrieve Terraform output '${TF_OUTPUT_NAME}'..."
-  # Capture stdout and stderr separately to isolate the actual output.
-  # Use a temporary file for stderr to avoid mixing with stdout.
-  # This matches the working script's behavior
-  TERRAFORM_RAW_OUTPUT=$(terraform output -raw "$TF_OUTPUT_NAME" 2> /tmp/tf_stderr_ai.log)
-  EXIT_CODE=$?
-  TERRAFORM_STDERR=$(cat /tmp/tf_stderr_ai.log)
-  rm -f /tmp/tf_stderr_ai.log # Clean up temp file
+# Run terraform output and redirect stdout and stderr to separate files
+# This ensures $? captures the exit code of the terraform output command directly
+terraform output -raw "$TF_OUTPUT_NAME" > /tmp/tf_stdout_ai.log 2> /tmp/tf_stderr_ai.log
+EXIT_CODE=$? # Capture the exit code of the 'terraform output' command
+TERRAFORM_RAW_OUTPUT=$(cat /tmp/tf_stdout_ai.log) # Read stdout from file
+TERRAFORM_STDERR=$(cat /tmp/tf_stderr_ai.log)     # Read stderr from file
 
-) # End subshell for cd into TERRAFORM_DIR
+rm -f /tmp/tf_stdout_ai.log /tmp/tf_stderr_ai.log # Clean up temp files
 
 # Trim all whitespace from the raw output (stdout)
 APP_INSIGHTS_CONN_STR=$(echo "$TERRAFORM_RAW_OUTPUT" | xargs)
@@ -89,7 +86,6 @@ APP_INSIGHTS_CONN_STR=$(echo "$TERRAFORM_RAW_OUTPUT" | xargs)
 # Check if the command was successful AND the trimmed output is non-empty
 # AND the trimmed output does NOT contain common warning/error messages
 # AND the stderr does NOT contain common error messages
-# This robust checking logic matches the working script
 if [ "$EXIT_CODE" -eq 0 ] && \
    [ -n "$APP_INSIGHTS_CONN_STR" ] && \
    [[ ! "$APP_INSIGHTS_CONN_STR" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && \
@@ -97,7 +93,7 @@ if [ "$EXIT_CODE" -eq 0 ] && \
     echo "Terraform output '${TF_OUTPUT_NAME}' retrieved successfully for $ENVIRONMENT."
 else
     echo "Error: Terraform output '${TF_OUTPUT_NAME}' not found, was empty, or contained warnings/errors for $ENVIRONMENT."
-    echo "Debug Info: Exit Code: $EXIT_CODE"
+    echo "Debug Info: Exit Code: '$EXIT_CODE'" # Added quotes to ensure it prints even if empty/problematic
     echo "Debug Info: Raw Output: '$TERRAFORM_RAW_OUTPUT'"
     echo "Debug Info: Trimmed Output: '$APP_INSIGHTS_CONN_STR'"
     echo "Debug Info: Stderr: '$TERRAFORM_STDERR'"
@@ -111,9 +107,6 @@ echo "Connection string successfully masked in logs."
 
 # --- Step 3: Inject Connection String into HTML ---
 echo "Injecting connection string into '$HTML_FILE'..."
-# Use sed to replace the placeholder with the actual connection string
-# We use | as the delimiter for sed to avoid issues if the connection string contains /
-# The 'g' flag ensures all occurrences are replaced
 sed -i "s|${PLACEHOLDER}|${APP_INSIGHTS_CONN_STR}|g" "$HTML_FILE"
 
 if [ $? -eq 0 ]; then
