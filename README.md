@@ -30,13 +30,15 @@ Whitespace redeploy requires either a terraform destroy which is not currently a
 
 If we wanted to make this portable, we would want a pre-processor to build the requirements + return them to the client.
 
-To add:
+Talking points:
 
 Diagram
 
 Make prod deployments a dependency of dev
 
 Add js metrics to index.html
+
+Automated destroys
 
 Custom domain support
 
