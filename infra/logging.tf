@@ -19,7 +19,8 @@ resource "azurerm_application_insights_standard_web_test" "main" {
   location                = azurerm_resource_group.main.location
   resource_group_name     = azurerm_resource_group.main.name
   application_insights_id = azurerm_application_insights.main.id
-  geo_locations           = ["us-fl-mia-edge", "emea-gb-db3-azr"]
+  geo_locations           = ["us-fl-mia-edge", "emea-gb-db3-azr", "us-va-ash-azr"]
+  enabled                 = true
 
   request {
     url = azurerm_static_web_app.main.default_host_name
