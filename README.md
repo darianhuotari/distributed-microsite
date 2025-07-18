@@ -85,3 +85,5 @@ Billing alert
 Dashboards
 
 encrypt state in gha artifact
+
+Add tags for environment, cost center, etc. (via tfvars or locals or something similar)
