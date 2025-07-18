@@ -72,6 +72,8 @@ Automated destroys
 
 Dependabot + external security scanning tools
 
+Modularization for portability, if this is going to be re-used
+
 Custom domain support (might help issue where it is hard to tell which stage site belongs to which env)
 
 Custom container for build / deploy, allowing for simpler local development without CI/CD dependencies
