@@ -118,7 +118,6 @@ jobs:
         # Use absolute path
         run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh"
         working-directory: "infra" # Adjust to your Terraform infra path
-        continue-on-error: true
 
       - name: Build And Deploy Static Web App
         # We make sure the key isn't empty; if so, skip because the infra hasn't been provisioned yet
