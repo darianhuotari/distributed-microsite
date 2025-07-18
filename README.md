@@ -70,6 +70,8 @@ Make prod deployments a dependency of dev (smoke test dev before deploying to pr
 
 Automated destroys
 
+Dependabot + external security scanning tools
+
 Custom domain support (might help issue where it is hard to tell which stage site belongs to which env)
 
 Custom container for build / deploy, allowing for simpler local development without CI/CD dependencies
