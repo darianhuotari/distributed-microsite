@@ -1,5 +1,5 @@
 resource "azurerm_log_analytics_workspace" "main" {
-  name                = "${var.site-name}-la"
+  name                = "${var.site-name}-${var.environment_name}-la"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "PerGB2018"
@@ -7,7 +7,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 resource "azurerm_application_insights" "main" {
-  name                = "${var.site-name}-appinsights"
+  name                = "${var.site-name}-${var.environment_name}-appinsights"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   workspace_id        = azurerm_log_analytics_workspace.main.id
@@ -15,7 +15,7 @@ resource "azurerm_application_insights" "main" {
 }
 
 resource "azurerm_application_insights_standard_web_test" "main" {
-  name                    = "${var.site-name}-webtest"
+  name                    = "${var.site-name}-${var.environment_name}-webtest"
   location                = azurerm_resource_group.main.location
   resource_group_name     = azurerm_resource_group.main.name
   application_insights_id = azurerm_application_insights.main.id
