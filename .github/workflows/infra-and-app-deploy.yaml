@@ -124,7 +124,7 @@ jobs:
             "${{ github.workspace }}/source/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
             "${{ matrix.environment }}" \
-            "${{ github.workspace }}/infra" \ # Absolute path to your Terraform root module
+            "${{ github.workspace }}/infra" \
             "app_insights_connection_string"
         continue-on-error: true
 
