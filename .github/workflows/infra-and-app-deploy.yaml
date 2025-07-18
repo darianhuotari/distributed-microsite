@@ -18,8 +18,13 @@ env:
 
 jobs:
   tf-and-app:
+    strategy:
+      matrix:
+        environment: ["development", "production"] # Define your environments here
+      fail-fast: false # Set to true to cancel all jobs if any matrix job fails
+
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ matrix.environment }}
     permissions:
       actions: read        # Required to identify workflow run.
       checks: write        # Required to add status summary.
@@ -51,7 +56,8 @@ jobs:
           working-directory: infra
           command: init
           arg-lock: false
-          arg-backend-config: "backends/prod.tfbackend"
+          arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
+          arg-var-file: "vars/${{ matrix.environment }}.tfvars"
           format: true
           validate: true
 
@@ -102,47 +108,14 @@ jobs:
           working-directory: infra
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
-          arg-backend-config: "backends/prod.tfbackend"
+          arg-backend-config: "backends/${{ matrix.environment }}.tfbackend"
+          arg-var-file: "vars/${{ matrix.environment }}.tfvars"
 
       - name: Get Static Web App API Key
         id: get_api_key
-        run: |
-          API_KEY_VALUE="" # Initialize to empty
-          # Initialize Terraform backend before attempting to get output
-          terraform init -backend-config="backends/prod.tfbackend" -no-color 2>/dev/null || true
-
-          # Attempt to get the Terraform output.
-          # Capture stdout and stderr separately to isolate the actual output.
-          # Use a temporary file for stderr to avoid mixing with stdout.
-          TERRAFORM_RAW_OUTPUT=$(terraform output -raw static_web_app_api_key 2> /tmp/tf_stderr.log)
-          EXIT_CODE=$?
-          TERRAFORM_STDERR=$(cat /tmp/tf_stderr.log)
-          rm -f /tmp/tf_stderr.log # Clean up temp file
-
-          # Trim all whitespace from the raw output (stdout)
-          TRIMMED_OUTPUT=$(echo "$TERRAFORM_RAW_OUTPUT" | xargs)
-
-          # Check if the command was successful AND the trimmed output is non-empty
-          # AND the trimmed output does NOT contain common warning/error messages
-          # AND the stderr does NOT contain common error messages
-          if [ "$EXIT_CODE" -eq 0 ] && \
-             [ -n "$TRIMMED_OUTPUT" ] && \
-             [[ ! "$TRIMMED_OUTPUT" =~ ^(Warning:|Error:|No outputs found|Please define an output|terraform console) ]] && \
-             [[ ! "$TERRAFORM_STDERR" =~ ^(Error:|Failed to reload) ]]; then # Check stderr for critical errors
-            API_KEY_VALUE="$TRIMMED_OUTPUT"
-            echo "Terraform output 'static_web_app_api_key' retrieved successfully."
-          else
-            echo "Terraform output 'static_web_app_api_key' not found, was empty, or contained warnings/errors. Setting API_KEY_VALUE to empty string."
-            echo "Debug Info: Exit Code: $EXIT_CODE"
-            echo "Debug Info: Trimmed Output: '$TRIMMED_OUTPUT'"
-            echo "Debug Info: Stderr: '$TERRAFORM_STDERR'"
-          fi
-
-          # echo "::add-mask::$API_KEY_VALUE"
-          echo "STATIC_WEB_APP_API_KEY=$API_KEY_VALUE" >> $GITHUB_ENV # Store as env var for subsequent steps
-          echo "masked key: $API_KEY_VALUE"
+        # Use absolute path since we also use a working-directory
+        run: "$GITHUB_WORKSPACE/.github/scripts/get_swa_api_key.sh ${{ matrix.environment }}"
         working-directory: "infra" # Adjust to your Terraform infra path
-        continue-on-error: true
 
       - name: Build And Deploy Static Web App
         # We make sure the key isn't empty; if so, skip because the infra hasn't been provisioned yet

@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "main" {
-  name     = "${var.site-name}-rg"
+  name     = "${var.site-name}-${var.environment_name}-rg"
   location = var.location
 }
 
@@ -10,7 +10,7 @@ resource "azurerm_static_web_app" "main" {
 }
 
 resource "azurerm_key_vault" "main" {
-  name                       = "${var.site-name}-kv"
+  name                       = "${var.site-name}-${var.environment_name}-kv"
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
@@ -39,7 +39,7 @@ resource "azurerm_key_vault" "main" {
 }
 
 resource "azurerm_key_vault_secret" "main" {
-  name         = "${var.site-name}-api-key"
+  name         = "${var.site-name}-${var.environment_name}-api-key"
   value        = azurerm_static_web_app.main.api_key
   key_vault_id = azurerm_key_vault.main.id
 }
