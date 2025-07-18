@@ -14,6 +14,12 @@ resource "azurerm_application_insights" "main" {
   application_type    = "other"
 }
 
+resource "azurerm_key_vault_secret" "appins" {
+  name         = "${var.site-name}-${var.environment_name}-app-ins-conn-str"
+  value        = azurerm_application_insights.main.connection_string
+  key_vault_id = azurerm_key_vault.main.id
+}
+
 resource "azurerm_application_insights_standard_web_test" "main" {
   name                    = "${var.site-name}-${var.environment_name}-webtest"
   location                = azurerm_resource_group.main.location
@@ -24,5 +30,18 @@ resource "azurerm_application_insights_standard_web_test" "main" {
 
   request {
     url = "https://${azurerm_static_web_app.main.default_host_name}"
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "main" {
+  name                = "${var.site-name}-${var.environment_name}-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_application_insights_standard_web_test.main.id, azurerm_application_insights.main.id]
+  description         = "Web test alert"
+
+  application_insights_web_test_location_availability_criteria {
+    web_test_id           = azurerm_application_insights_standard_web_test.main.id
+    component_id          = azurerm_application_insights.main.id
+    failed_location_count = 2
   }
 }
