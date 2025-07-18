@@ -107,6 +107,12 @@ echo "Connection string successfully masked in logs."
 
 # --- Step 3: Inject Connection String into HTML ---
 echo "Injecting connection string into '$HTML_FILE'..."
+
+# Add this debug line right before sed
+echo "Checking HTML file existence and permissions:"
+ls -l "$HTML_FILE" || { echo "ERROR: ls failed for $HTML_FILE"; exit 1; }
+echo "Current working directory: $(pwd)" # Also check cwd
+
 sed -i "s|${PLACEHOLDER}|${APP_INSIGHTS_CONN_STR}|g" "$HTML_FILE"
 
 if [ $? -eq 0 ]; then
