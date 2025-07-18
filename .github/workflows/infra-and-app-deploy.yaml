@@ -118,13 +118,15 @@ jobs:
         working-directory: "infra" # Adjust to your Terraform infra path
 
       - name: Retrieve App Insights Connection String and Inject into HTML
-        # Use absolute path to the script since we also use a working-directory
         run: |
-          .github/scripts/inject_app_insights.sh \
-            "${{ github.workspace }}/source/index.html" \
+          # Use GITHUB_WORKSPACE directly to build paths
+          # This assumes your repo root is directly at $GITHUB_WORKSPACE
+          # i.e., source/index.html is at $GITHUB_WORKSPACE/source/index.html
+          "${GITHUB_WORKSPACE}/.github/scripts/inject_app_insights.sh" \
+            "${GITHUB_WORKSPACE}/source/index.html" \
             "APP_INSIGHTS_CONNECTION_STRING_PLACEHOLDER" \
-            "${{ matrix.environment }}" \
-            "${{ github.workspace }}/infra" \
+            "${{ github.event.inputs.environment }}" \
+            "${GITHUB_WORKSPACE}/infra" \
             "app_insights_connection_string"
         continue-on-error: true
 
