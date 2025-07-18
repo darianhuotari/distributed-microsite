@@ -85,13 +85,13 @@ jobs:
           </details>"
 
           # Get body of PR comment from tf step output.
-          comment=$(gh api /repos/{owner}/{repo}/issues/comments/${{ steps.tf.outputs.comment-id }} --method GET --jq '.body')
+          comment=$(gh api /repos/{owner}/{repo}/issues/comments/${{ steps.tf-and-app.outputs.comment-id }} --method GET --jq '.body')
 
           # Replace placeholder with TFLint output.
           comment="${comment//<!-- placeholder-2 -->/$tflint}"
 
           # Update PR comment combined with TFLint output.
-          gh api /repos/{owner}/{repo}/issues/comments/${{ steps.tf.outputs.comment-id }} --method PATCH --field body="$comment"
+          gh api /repos/{owner}/{repo}/issues/comments/${{ steps.tf-and-app.outputs.comment-id }} --method PATCH --field body="$comment"
 
           # Exit workflow due to TFLint error.
           exit 1
